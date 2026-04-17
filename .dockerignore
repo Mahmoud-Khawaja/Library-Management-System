@@ -1,0 +1,22 @@
+# Maven build output - not needed in Docker build context
+target/
+
+# IDE and OS files
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Logs
+*.log
+logs/
+
+# Docs (not needed to build the image)
+README.md
+postman_collection.json
+groups.txt
