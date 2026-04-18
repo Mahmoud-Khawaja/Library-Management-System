@@ -1,5 +1,6 @@
 package com.example.library.controller;
 
+import com.example.library.dto.ApiResponse;
 import com.example.library.dto.request.MemberRequestDTO;
 import com.example.library.dto.response.MemberResponseDTO;
 import com.example.library.service.MemberService;
@@ -21,35 +22,46 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping
-    public ResponseEntity<Page<MemberResponseDTO>> getAllMembers(
+    public ResponseEntity<ApiResponse<Page<MemberResponseDTO>>> getAllMembers(
             @PageableDefault(size = 10, sort = "id") Pageable pageable) {
-        return ResponseEntity.ok(memberService.getAllMembers(pageable));
+        Page<MemberResponseDTO> members = memberService.getAllMembers(pageable);
+        ApiResponse<Page<MemberResponseDTO>> response = ApiResponse.of(HttpStatus.OK.value(), "Members fetched successfully", members);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MemberResponseDTO> getMemberById(@PathVariable Long id) {
-        return ResponseEntity.ok(memberService.getMemberById(id));
+    public ResponseEntity<ApiResponse<MemberResponseDTO>> getMemberById(@PathVariable Long id) {
+        MemberResponseDTO member = memberService.getMemberById(id);
+        ApiResponse<MemberResponseDTO> response = ApiResponse.of(HttpStatus.OK.value(), "Member fetched successfully", member);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<MemberResponseDTO>> searchMembers(@RequestParam String name) {
-        return ResponseEntity.ok(memberService.searchMembers(name));
+    public ResponseEntity<ApiResponse<List<MemberResponseDTO>>> searchMembers(@RequestParam String name) {
+        List<MemberResponseDTO> members = memberService.searchMembers(name);
+        ApiResponse<List<MemberResponseDTO>> response = ApiResponse.of(HttpStatus.OK.value(), "Members fetched successfully", members);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<MemberResponseDTO> createMember(@Valid @RequestBody MemberRequestDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.createMember(dto));
+    public ResponseEntity<ApiResponse<MemberResponseDTO>> createMember(@Valid @RequestBody MemberRequestDTO dto) {
+        MemberResponseDTO member = memberService.createMember(dto);
+        ApiResponse<MemberResponseDTO> response = ApiResponse.of(HttpStatus.CREATED.value(), "Member created successfully", member);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MemberResponseDTO> updateMember(
+    public ResponseEntity<ApiResponse<MemberResponseDTO>> updateMember(
             @PathVariable Long id, @Valid @RequestBody MemberRequestDTO dto) {
-        return ResponseEntity.ok(memberService.updateMember(id, dto));
+        MemberResponseDTO member = memberService.updateMember(id, dto);
+        ApiResponse<MemberResponseDTO> response = ApiResponse.of(HttpStatus.OK.value(), "Member updated successfully", member);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
-        return ResponseEntity.noContent().build();
+        ApiResponse<Void> response = ApiResponse.of(HttpStatus.OK.value(), "Member deleted successfully", null);
+        return ResponseEntity.ok(response);
     }
 }

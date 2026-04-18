@@ -1,5 +1,6 @@
 package com.example.library.controller;
 
+import com.example.library.dto.ApiResponse;
 import com.example.library.dto.request.AuthorRequestDTO;
 import com.example.library.dto.response.AuthorResponseDTO;
 import com.example.library.dto.response.BookResponseDTO;
@@ -22,35 +23,46 @@ public class AuthorController {
     private final AuthorService authorService;
 
     @GetMapping
-    public ResponseEntity<Page<AuthorResponseDTO>> getAllAuthors(
+    public ResponseEntity<ApiResponse<Page<AuthorResponseDTO>>> getAllAuthors(
             @PageableDefault(size = 10, sort = "id") Pageable pageable) {
-        return ResponseEntity.ok(authorService.getAllAuthors(pageable));
+        Page<AuthorResponseDTO> authors = authorService.getAllAuthors(pageable);
+        ApiResponse<Page<AuthorResponseDTO>> response = ApiResponse.of(HttpStatus.OK.value(), "Authors fetched successfully", authors);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AuthorResponseDTO> getAuthorById(@PathVariable Long id) {
-        return ResponseEntity.ok(authorService.getAuthorById(id));
+    public ResponseEntity<ApiResponse<AuthorResponseDTO>> getAuthorById(@PathVariable Long id) {
+        AuthorResponseDTO author = authorService.getAuthorById(id);
+        ApiResponse<AuthorResponseDTO> response = ApiResponse.of(HttpStatus.OK.value(), "Author fetched successfully", author);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<AuthorResponseDTO> createAuthor(@Valid @RequestBody AuthorRequestDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(authorService.createAuthor(dto));
+    public ResponseEntity<ApiResponse<AuthorResponseDTO>> createAuthor(@Valid @RequestBody AuthorRequestDTO dto) {
+        AuthorResponseDTO author = authorService.createAuthor(dto);
+        ApiResponse<AuthorResponseDTO> response = ApiResponse.of(HttpStatus.CREATED.value(), "Author created successfully", author);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AuthorResponseDTO> updateAuthor(
+    public ResponseEntity<ApiResponse<AuthorResponseDTO>> updateAuthor(
             @PathVariable Long id, @Valid @RequestBody AuthorRequestDTO dto) {
-        return ResponseEntity.ok(authorService.updateAuthor(id, dto));
+        AuthorResponseDTO author = authorService.updateAuthor(id, dto);
+        ApiResponse<AuthorResponseDTO> response = ApiResponse.of(HttpStatus.OK.value(), "Author updated successfully", author);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteAuthor(@PathVariable Long id) {
         authorService.deleteAuthor(id);
-        return ResponseEntity.noContent().build();
+        ApiResponse<Void> response = ApiResponse.of(HttpStatus.OK.value(), "Author deleted successfully", null);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}/books")
-    public ResponseEntity<List<BookResponseDTO>> getBooksByAuthor(@PathVariable Long id) {
-        return ResponseEntity.ok(authorService.getBooksByAuthor(id));
+    public ResponseEntity<ApiResponse<List<BookResponseDTO>>> getBooksByAuthor(@PathVariable Long id) {
+        List<BookResponseDTO> books = authorService.getBooksByAuthor(id);
+        ApiResponse<List<BookResponseDTO>> response = ApiResponse.of(HttpStatus.OK.value(), "Author books fetched successfully", books);
+        return ResponseEntity.ok(response);
     }
 }

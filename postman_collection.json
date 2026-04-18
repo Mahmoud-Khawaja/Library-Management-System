@@ -1,25 +1,39 @@
 {
   "info": {
-    "name": "Library Management System",
+    "name": "Library Management System API Tests",
+    "description": "Postman collection to test all LMS endpoints with automatic ID chaining.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
     {
       "key": "baseUrl",
       "value": "http://localhost:8080"
+    },
+    {
+      "key": "authorId",
+      "value": "1"
+    },
+    {
+      "key": "bookId",
+      "value": "1"
+    },
+    {
+      "key": "memberId",
+      "value": "1"
+    },
+    {
+      "key": "borrowRecordId",
+      "value": "1"
     }
   ],
   "item": [
     {
-      "name": "Authors",
+      "name": "01 - Setup",
       "item": [
         {
           "name": "Create Author",
           "request": {
             "method": "POST",
-            "url": {
-              "raw": "{{baseUrl}}/api/authors"
-            },
             "header": [
               {
                 "key": "Content-Type",
@@ -28,35 +42,136 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"firstName\": \"George\", \"lastName\": \"Orwell\", \"nationality\": \"British\", \"birthDate\": \"1903-06-25\"}"
+              "raw": "{\n  \"firstName\": \"George\",\n  \"lastName\": \"Orwell\",\n  \"nationality\": \"British\",\n  \"birthDate\": \"1903-06-25\"\n}"
+            },
+            "url": "{{baseUrl}}/api/authors"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () { pm.response.to.have.status(201); });",
+                  "const json = pm.response.json();",
+                  "pm.expect(json).to.have.property('id');",
+                  "pm.collectionVariables.set('authorId', json.id);"
+                ]
+              }
             }
-          }
+          ]
         },
+        {
+          "name": "Create Book",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"1984\",\n  \"isbn\": \"978-0451524935\",\n  \"genre\": \"Dystopian\",\n  \"publishedYear\": 1949,\n  \"authorId\": {{authorId}}\n}"
+            },
+            "url": "{{baseUrl}}/api/books"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () { pm.response.to.have.status(201); });",
+                  "const json = pm.response.json();",
+                  "pm.expect(json).to.have.property('id');",
+                  "pm.collectionVariables.set('bookId', json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Member",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Alice\",\n  \"lastName\": \"Smith\",\n  \"email\": \"alice@example.com\",\n  \"phoneNumber\": \"01012345678\"\n}"
+            },
+            "url": "{{baseUrl}}/api/members"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () { pm.response.to.have.status(201); });",
+                  "const json = pm.response.json();",
+                  "pm.expect(json).to.have.property('id');",
+                  "pm.collectionVariables.set('memberId', json.id);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 - Authors",
+      "item": [
         {
           "name": "Get All Authors",
           "request": {
             "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/authors?page=0&size=10&sort=id,asc"
+            "url": "{{baseUrl}}/api/authors?page=0&size=10&sort=id,asc"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.expect(json).to.have.property('content');"
+                ]
+              }
             }
-          }
+          ]
         },
         {
           "name": "Get Author By ID",
           "request": {
             "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/authors/1"
+            "url": "{{baseUrl}}/api/authors/{{authorId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.expect(json.id).to.eql(Number(pm.collectionVariables.get('authorId')));"
+                ]
+              }
             }
-          }
+          ]
         },
         {
           "name": "Update Author",
           "request": {
             "method": "PUT",
-            "url": {
-              "raw": "{{baseUrl}}/api/authors/1"
-            },
             "header": [
               {
                 "key": "Content-Type",
@@ -65,119 +180,109 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"firstName\": \"George\", \"lastName\": \"Orwell\", \"nationality\": \"British\", \"birthDate\": \"1903-06-25\"}"
+              "raw": "{\n  \"firstName\": \"George\",\n  \"lastName\": \"Orwell\",\n  \"nationality\": \"English\",\n  \"birthDate\": \"1903-06-25\"\n}"
+            },
+            "url": "{{baseUrl}}/api/authors/{{authorId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
             }
-          }
-        },
-        {
-          "name": "Delete Author",
-          "request": {
-            "method": "DELETE",
-            "url": {
-              "raw": "{{baseUrl}}/api/authors/1"
-            }
-          }
+          ]
         },
         {
           "name": "Get Books By Author",
           "request": {
             "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/authors/1/books"
+            "url": "{{baseUrl}}/api/authors/{{authorId}}/books"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                  "pm.expect(pm.response.json()).to.be.an('array');"
+                ]
+              }
             }
-          }
+          ]
         }
       ]
     },
     {
-      "name": "Books",
+      "name": "03 - Books",
       "item": [
-        {
-          "name": "Create Book",
-          "request": {
-            "method": "POST",
-            "url": {
-              "raw": "{{baseUrl}}/api/books"
-            },
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"title\": \"1984\", \"isbn\": \"978-0451524935\", \"genre\": \"Dystopian\", \"publishedYear\": 1949, \"authorId\": 1}"
-            }
-          }
-        },
         {
           "name": "Get All Books",
           "request": {
             "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/books?page=0&size=10&sort=title,asc"
+            "url": "{{baseUrl}}/api/books?page=0&size=10&sort=title,asc"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.expect(json).to.have.property('content');"
+                ]
+              }
             }
-          }
+          ]
         },
         {
           "name": "Get Book By ID",
           "request": {
             "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/books/1"
-            }
-          }
-        },
-        {
-          "name": "Update Book",
-          "request": {
-            "method": "PUT",
-            "url": {
-              "raw": "{{baseUrl}}/api/books/1"
-            },
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
+            "url": "{{baseUrl}}/api/books/{{bookId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.expect(json.id).to.eql(Number(pm.collectionVariables.get('bookId')));"
+                ]
               }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"title\": \"1984 Updated\", \"isbn\": \"978-0451524935\", \"genre\": \"Dystopian\", \"publishedYear\": 1949, \"authorId\": 1}"
             }
-          }
-        },
-        {
-          "name": "Delete Book",
-          "request": {
-            "method": "DELETE",
-            "url": {
-              "raw": "{{baseUrl}}/api/books/1"
-            }
-          }
+          ]
         },
         {
           "name": "Search Books",
           "request": {
             "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/books/search?title=1984&genre=Dystopian&publishedYear=1949"
+            "url": "{{baseUrl}}/api/books/search?title=1984&genre=Dystopian&publishedYear=1949"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                  "pm.expect(pm.response.json()).to.be.an('array');"
+                ]
+              }
             }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Members",
-      "item": [
+          ]
+        },
         {
-          "name": "Register Member",
+          "name": "Update Book",
           "request": {
-            "method": "POST",
-            "url": {
-              "raw": "{{baseUrl}}/api/members"
-            },
+            "method": "PUT",
             "header": [
               {
                 "key": "Content-Type",
@@ -186,44 +291,90 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"firstName\": \"Alice\", \"lastName\": \"Smith\", \"email\": \"alice@example.com\", \"phoneNumber\": \"01012345678\"}"
+              "raw": "{\n  \"title\": \"1984 - Updated\",\n  \"isbn\": \"978-0451524935\",\n  \"genre\": \"Political Fiction\",\n  \"publishedYear\": 1949,\n  \"authorId\": {{authorId}}\n}"
+            },
+            "url": "{{baseUrl}}/api/books/{{bookId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
             }
-          }
-        },
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 - Members",
+      "item": [
         {
           "name": "Get All Members",
           "request": {
             "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/members?page=0&size=10"
+            "url": "{{baseUrl}}/api/members?page=0&size=10&sort=id,asc"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.expect(json).to.have.property('content');"
+                ]
+              }
             }
-          }
+          ]
         },
         {
           "name": "Get Member By ID",
           "request": {
             "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/members/1"
+            "url": "{{baseUrl}}/api/members/{{memberId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.expect(json.id).to.eql(Number(pm.collectionVariables.get('memberId')));"
+                ]
+              }
             }
-          }
+          ]
         },
         {
           "name": "Search Members By Name",
           "request": {
             "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/members/search?name=Alice"
+            "url": "{{baseUrl}}/api/members/search?name=Alice"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                  "pm.expect(pm.response.json()).to.be.an('array');"
+                ]
+              }
             }
-          }
+          ]
         },
         {
           "name": "Update Member",
           "request": {
             "method": "PUT",
-            "url": {
-              "raw": "{{baseUrl}}/api/members/1"
-            },
             "header": [
               {
                 "key": "Content-Type",
@@ -232,31 +383,31 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"firstName\": \"Alice\", \"lastName\": \"Johnson\", \"email\": \"alice.j@example.com\", \"phoneNumber\": \"01098765432\"}"
+              "raw": "{\n  \"firstName\": \"Alice\",\n  \"lastName\": \"Johnson\",\n  \"email\": \"alice.johnson@example.com\",\n  \"phoneNumber\": \"01098765432\"\n}"
+            },
+            "url": "{{baseUrl}}/api/members/{{memberId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
             }
-          }
-        },
-        {
-          "name": "Delete Member",
-          "request": {
-            "method": "DELETE",
-            "url": {
-              "raw": "{{baseUrl}}/api/members/1"
-            }
-          }
+          ]
         }
       ]
     },
     {
-      "name": "Borrow Records",
+      "name": "05 - Borrow Records",
       "item": [
         {
           "name": "Borrow a Book",
           "request": {
             "method": "POST",
-            "url": {
-              "raw": "{{baseUrl}}/api/borrow-records"
-            },
             "header": [
               {
                 "key": "Content-Type",
@@ -265,36 +416,141 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"bookId\": 1, \"memberId\": 1}"
+              "raw": "{\n  \"bookId\": {{bookId}},\n  \"memberId\": {{memberId}}\n}"
+            },
+            "url": "{{baseUrl}}/api/borrow-records"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', function () { pm.response.to.have.status(201); });",
+                  "const json = pm.response.json();",
+                  "pm.expect(json).to.have.property('id');",
+                  "pm.collectionVariables.set('borrowRecordId', json.id);"
+                ]
+              }
             }
-          }
-        },
-        {
-          "name": "Return a Book",
-          "request": {
-            "method": "PUT",
-            "url": {
-              "raw": "{{baseUrl}}/api/borrow-records/1/return"
-            }
-          }
+          ]
         },
         {
           "name": "Get Records By Member",
           "request": {
             "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/borrow-records/member/1"
+            "url": "{{baseUrl}}/api/borrow-records/member/{{memberId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                  "pm.expect(pm.response.json()).to.be.an('array');"
+                ]
+              }
             }
-          }
+          ]
         },
         {
           "name": "Get Active Borrows",
           "request": {
             "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/borrow-records/active"
+            "url": "{{baseUrl}}/api/borrow-records/active"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                  "pm.expect(pm.response.json()).to.be.an('array');"
+                ]
+              }
             }
-          }
+          ]
+        },
+        {
+          "name": "Return a Book",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/borrow-records/{{borrowRecordId}}/return"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.expect(json.returnDate).to.not.eql(null);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 - Cleanup",
+      "item": [
+        {
+          "name": "Delete Book",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/books/{{bookId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 204', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Member",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/members/{{memberId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 204', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Author",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/authors/{{authorId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 204', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
         }
       ]
     }
