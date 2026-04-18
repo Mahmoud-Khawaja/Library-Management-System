@@ -1,6 +1,7 @@
 package com.example.library.controller;
 
 import com.example.library.dto.ApiResponse;
+import com.example.library.dto.PaginatedResponse;
 import com.example.library.dto.request.BookRequestDTO;
 import com.example.library.dto.response.BookResponseDTO;
 import com.example.library.service.BookService;
@@ -22,10 +23,14 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<BookResponseDTO>>> getAllBooks(
+    public ResponseEntity<ApiResponse<PaginatedResponse<BookResponseDTO>>> getAllBooks(
             @PageableDefault(size = 10, sort = "id") Pageable pageable) {
         Page<BookResponseDTO> books = bookService.getAllBooks(pageable);
-        ApiResponse<Page<BookResponseDTO>> response = ApiResponse.of(HttpStatus.OK.value(), "Books fetched successfully", books);
+        ApiResponse<PaginatedResponse<BookResponseDTO>> response = ApiResponse.of(
+                HttpStatus.OK.value(),
+                "Books fetched successfully",
+                PaginatedResponse.from(books)
+        );
         return ResponseEntity.ok(response);
     }
 

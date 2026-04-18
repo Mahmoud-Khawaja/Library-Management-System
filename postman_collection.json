@@ -54,8 +54,9 @@
                 "exec": [
                   "pm.test('Status is 201', function () { pm.response.to.have.status(201); });",
                   "const json = pm.response.json();",
-                  "pm.expect(json).to.have.property('id');",
-                  "pm.collectionVariables.set('authorId', json.id);"
+                  "pm.expect(json).to.have.property('data');",
+                  "pm.expect(json.data).to.have.property('id');",
+                  "pm.collectionVariables.set('authorId', json.data.id);"
                 ]
               }
             }
@@ -85,8 +86,9 @@
                 "exec": [
                   "pm.test('Status is 201', function () { pm.response.to.have.status(201); });",
                   "const json = pm.response.json();",
-                  "pm.expect(json).to.have.property('id');",
-                  "pm.collectionVariables.set('bookId', json.id);"
+                  "pm.expect(json).to.have.property('data');",
+                  "pm.expect(json.data).to.have.property('id');",
+                  "pm.collectionVariables.set('bookId', json.data.id);"
                 ]
               }
             }
@@ -116,8 +118,9 @@
                 "exec": [
                   "pm.test('Status is 201', function () { pm.response.to.have.status(201); });",
                   "const json = pm.response.json();",
-                  "pm.expect(json).to.have.property('id');",
-                  "pm.collectionVariables.set('memberId', json.id);"
+                  "pm.expect(json).to.have.property('data');",
+                  "pm.expect(json.data).to.have.property('id');",
+                  "pm.collectionVariables.set('memberId', json.data.id);"
                 ]
               }
             }
@@ -142,7 +145,10 @@
                 "exec": [
                   "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
                   "const json = pm.response.json();",
-                  "pm.expect(json).to.have.property('content');"
+                  "pm.expect(json).to.have.property('data');",
+                  "pm.expect(json.data).to.have.property('content');",
+                  "pm.expect(json.data).to.have.property('totalElements');",
+                  "pm.expect(json.data).to.have.property('pageNumber');"
                 ]
               }
             }
@@ -162,7 +168,8 @@
                 "exec": [
                   "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
                   "const json = pm.response.json();",
-                  "pm.expect(json.id).to.eql(Number(pm.collectionVariables.get('authorId')));"
+                  "pm.expect(json).to.have.property('data');",
+                  "pm.expect(json.data.id).to.eql(Number(pm.collectionVariables.get('authorId')));"
                 ]
               }
             }
@@ -234,7 +241,10 @@
                 "exec": [
                   "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
                   "const json = pm.response.json();",
-                  "pm.expect(json).to.have.property('content');"
+                  "pm.expect(json).to.have.property('data');",
+                  "pm.expect(json.data).to.have.property('content');",
+                  "pm.expect(json.data).to.have.property('totalElements');",
+                  "pm.expect(json.data).to.have.property('pageNumber');"
                 ]
               }
             }
@@ -254,7 +264,8 @@
                 "exec": [
                   "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
                   "const json = pm.response.json();",
-                  "pm.expect(json.id).to.eql(Number(pm.collectionVariables.get('bookId')));"
+                  "pm.expect(json).to.have.property('data');",
+                  "pm.expect(json.data.id).to.eql(Number(pm.collectionVariables.get('bookId')));"
                 ]
               }
             }
@@ -273,7 +284,9 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
-                  "pm.expect(pm.response.json()).to.be.an('array');"
+                  "const json = pm.response.json();",
+                  "pm.expect(json).to.have.property('data');",
+                  "pm.expect(json.data).to.be.an('array');"
                 ]
               }
             }
@@ -326,7 +339,10 @@
                 "exec": [
                   "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
                   "const json = pm.response.json();",
-                  "pm.expect(json).to.have.property('content');"
+                  "pm.expect(json).to.have.property('data');",
+                  "pm.expect(json.data).to.have.property('content');",
+                  "pm.expect(json.data).to.have.property('totalElements');",
+                  "pm.expect(json.data).to.have.property('pageNumber');"
                 ]
               }
             }
@@ -346,7 +362,8 @@
                 "exec": [
                   "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
                   "const json = pm.response.json();",
-                  "pm.expect(json.id).to.eql(Number(pm.collectionVariables.get('memberId')));"
+                  "pm.expect(json).to.have.property('data');",
+                  "pm.expect(json.data.id).to.eql(Number(pm.collectionVariables.get('memberId')));"
                 ]
               }
             }
@@ -365,7 +382,9 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
-                  "pm.expect(pm.response.json()).to.be.an('array');"
+                  "const json = pm.response.json();",
+                  "pm.expect(json).to.have.property('data');",
+                  "pm.expect(json.data).to.be.an('array');"
                 ]
               }
             }
@@ -428,8 +447,9 @@
                 "exec": [
                   "pm.test('Status is 201', function () { pm.response.to.have.status(201); });",
                   "const json = pm.response.json();",
-                  "pm.expect(json).to.have.property('id');",
-                  "pm.collectionVariables.set('borrowRecordId', json.id);"
+                  "pm.expect(json).to.have.property('data');",
+                  "pm.expect(json.data).to.have.property('id');",
+                  "pm.collectionVariables.set('borrowRecordId', json.data.id);"
                 ]
               }
             }
@@ -448,7 +468,9 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
-                  "pm.expect(pm.response.json()).to.be.an('array');"
+                  "const json = pm.response.json();",
+                  "pm.expect(json).to.have.property('data');",
+                  "pm.expect(json.data).to.be.an('array');"
                 ]
               }
             }
@@ -467,7 +489,9 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
-                  "pm.expect(pm.response.json()).to.be.an('array');"
+                  "const json = pm.response.json();",
+                  "pm.expect(json).to.have.property('data');",
+                  "pm.expect(json.data).to.be.an('array');"
                 ]
               }
             }
@@ -487,7 +511,8 @@
                 "exec": [
                   "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
                   "const json = pm.response.json();",
-                  "pm.expect(json.returnDate).to.not.eql(null);"
+                  "pm.expect(json).to.have.property('data');",
+                  "pm.expect(json.data.returnDate).to.not.eql(null);"
                 ]
               }
             }
@@ -510,7 +535,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status is 204', function () { pm.response.to.have.status(204); });"
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });"
                 ]
               }
             }
@@ -528,7 +553,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status is 204', function () { pm.response.to.have.status(204); });"
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });"
                 ]
               }
             }
@@ -546,7 +571,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status is 204', function () { pm.response.to.have.status(204); });"
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });"
                 ]
               }
             }

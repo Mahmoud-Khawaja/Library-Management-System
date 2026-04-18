@@ -1,6 +1,7 @@
 package com.example.library.controller;
 
 import com.example.library.dto.ApiResponse;
+import com.example.library.dto.PaginatedResponse;
 import com.example.library.dto.request.MemberRequestDTO;
 import com.example.library.dto.response.MemberResponseDTO;
 import com.example.library.service.MemberService;
@@ -22,10 +23,14 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<MemberResponseDTO>>> getAllMembers(
+    public ResponseEntity<ApiResponse<PaginatedResponse<MemberResponseDTO>>> getAllMembers(
             @PageableDefault(size = 10, sort = "id") Pageable pageable) {
         Page<MemberResponseDTO> members = memberService.getAllMembers(pageable);
-        ApiResponse<Page<MemberResponseDTO>> response = ApiResponse.of(HttpStatus.OK.value(), "Members fetched successfully", members);
+        ApiResponse<PaginatedResponse<MemberResponseDTO>> response = ApiResponse.of(
+                HttpStatus.OK.value(),
+                "Members fetched successfully",
+                PaginatedResponse.from(members)
+        );
         return ResponseEntity.ok(response);
     }
 
