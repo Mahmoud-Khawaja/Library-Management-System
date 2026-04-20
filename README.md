@@ -4,6 +4,16 @@ A RESTful API for a library system built with Spring Boot 3, H2, Spring Data JPA
 
 ---
 
+## Team 9 Members
+
+| Name                              | Code    |
+|-----------------------------------|---------|
+| Youssef Daoud                     | 9231011 |
+| Rehab Marzouk                     | 9240027 |
+| Suhila Tharwat Elmasry            | 9230455 |
+| Abdelrahman Reda Khalaf           | 9220428 |
+| Mahmoud Mohamed Abdallah Mahmoud  | 9220795 |
+
 ## Table of Contents
 - [Prerequisites](#prerequisites)
 - [Tech Stack](#tech-stack)
